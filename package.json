@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-openapi-schema",
-  "version": "0.0.1",
+  "name": "@wearebreak/nextjs-openapi-schema",
+  "version": "0.0.1-alpha.1",
   "description": "Generate OpenAPI schema automatically from API routes in NextJS.",
   "type": "module",
   "main": "dist/index.js",
