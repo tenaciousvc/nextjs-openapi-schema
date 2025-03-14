@@ -1,4 +1,4 @@
-# nextjs-openapi-schema
+# @wearebreak/nextjs-openapi-schema
 
 A simple CLI tool to automatically generate OpenAPI schema for Next.js API routes.
 
