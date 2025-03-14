@@ -1,10 +1,8 @@
 export type OpenApiConfig = {
   apiDir: string;
   schemaDir: string;
-  docsUrl: string;
-  ui: string;
   outputFile: string;
-  includeOpenApiRoutes: boolean;
+  onlyOpenApiRoutes?: boolean;
 };
 
 export type OpenApiTemplate = {
@@ -43,7 +41,7 @@ export type RouteDefinition = {
 };
 
 export type Property = {
-  in?: "query";
+  in?: "query"|"path";
   name?: string;
   type?: string;
   description?: string;

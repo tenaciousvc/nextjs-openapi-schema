@@ -11,7 +11,7 @@ export class OpenApiGenerator {
   private routeProcessor: RouteProcessor;
 
   constructor() {
-    const templatePath = path.resolve("./next.openapi.json");
+    const templatePath = path.resolve("./next-openapi.json");
 
     this.template = JSON.parse(fs.readFileSync(templatePath, "utf-8"));
     this.config = this.getConfig();
@@ -21,23 +21,21 @@ export class OpenApiGenerator {
 
   public getConfig() {
     // @ts-ignore
-    const { apiDir, schemaDir, docsUrl, ui, outputFile, includeOpenApiRoutes } =
-      this.template;
+    const { apiDir, schemaDir, outputFile, onlyOpenApiRoutes } =
+      this.template["x-generator"];
 
     return {
       apiDir,
       schemaDir,
-      docsUrl,
-      ui,
       outputFile,
-      includeOpenApiRoutes,
+      onlyOpenApiRoutes,
     };
   }
 
-  public generate() {
+  public generate(verbose = false) {
     const { apiDir } = this.config;
 
-    this.routeProcessor.scanApiRoutes(apiDir);
+    this.routeProcessor.scanApiRoutes(apiDir, verbose);
 
     this.template.paths = this.routeProcessor.getSwaggerPaths();
 

@@ -25,7 +25,9 @@ export class RouteProcessor {
     return HTTP_METHODS.includes(varName);
   }
 
-  private processFile(filePath: string) {
+  private processFile(filePath: string, verbose = false) {
+    if(verbose) console.log(`Processing ${filePath}`);
+
     const content = fs.readFileSync(filePath, "utf-8");
     const ast = parse(content, {
       sourceType: "module",
@@ -63,7 +65,7 @@ export class RouteProcessor {
     });
   }
 
-  public scanApiRoutes(dir: string) {
+  public scanApiRoutes(dir: string, verbose = false) {
     const files = fs.readdirSync(dir);
 
     files.forEach((file) => {
@@ -71,10 +73,10 @@ export class RouteProcessor {
       const stat = fs.statSync(filePath);
 
       if (stat.isDirectory()) {
-        this.scanApiRoutes(filePath);
+        this.scanApiRoutes(filePath, verbose);
         // @ts-ignore
       } else if (file.endsWith(".ts")) {
-        this.processFile(filePath);
+        this.processFile(filePath, verbose);
       }
     });
   }
@@ -85,12 +87,19 @@ export class RouteProcessor {
     dataTypes: DataTypes
   ): void {
     const method = varName.toLowerCase();
-    const routePath = this.getRoutePath(filePath);
+    let routePath = this.getRoutePath(filePath);
     const rootPath = capitalize(routePath.split("/")[1]);
     const operationId = getOperationId(routePath, method);
     const { summary, description, auth, isOpenApi } = dataTypes;
 
-    if (this.config.includeOpenApiRoutes && !isOpenApi) {
+    const pathParams = routePath.split("/")
+        .filter(part => part.startsWith("[") && part.endsWith("]"))
+        .map(part => part.slice(1, -1));
+    routePath = routePath.replaceAll('[', '{').replaceAll(']', '}');
+
+    console.log(" - Adding route", method, routePath, pathParams);
+
+    if (this.config.onlyOpenApiRoutes && !isOpenApi) {
       // If flag is enabled and there is no @openapi tag, then skip path
       return;
     }
@@ -118,9 +127,11 @@ export class RouteProcessor {
       ];
     }
 
-    if (params) {
-      definition.parameters =
-        this.schemaProcessor.createRequestParamsSchema(params);
+    if (params || pathParams.length) {
+      definition.parameters = [
+        ...this.schemaProcessor.createPathParamsSchema(pathParams),
+        ...this.schemaProcessor.createRequestParamsSchema(params)
+      ]
     }
 
     // Add request body

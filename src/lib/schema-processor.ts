@@ -232,7 +232,27 @@ export class SchemaProcessor {
     return options;
   }
 
+  public createPathParamsSchema(params: string[]) {
+    const pathParams = [];
+
+    for (const name of params) {
+      const param: Property = {
+        in: "path",
+        name,
+        /*schema: {
+          type: value.type,
+        },
+        required: value.required,*/
+      };
+      pathParams.push(param);
+    }
+
+    return pathParams;
+  }
+
   public createRequestParamsSchema(params: Params) {
+    if(!params) return [];
+
     const queryParams = [];
 
     if (params.properties) {

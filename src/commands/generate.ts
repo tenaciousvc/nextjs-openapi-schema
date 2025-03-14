@@ -5,7 +5,7 @@ import ora from "ora";
 
 import { OpenApiGenerator } from "../lib/openapi-generator.js";
 
-export async function generate() {
+export async function generate({ verbose = false }) {
   const spinner = ora("Generating OpenAPI specification...\n").start();
 
   const generator = new OpenApiGenerator();
@@ -19,7 +19,7 @@ export async function generate() {
   const outputDir = path.resolve("./public");
   await fse.ensureDir(outputDir);
 
-  const apiDocs = generator.generate();
+  const apiDocs = generator.generate(verbose);
 
   // Write api docs
   const outputFile = path.join(outputDir, config.outputFile);

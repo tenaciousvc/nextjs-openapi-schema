@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Command, Option } from "commander";
+import { Command } from "commander";
 
 import { init } from "./commands/init.js";
 import { generate } from "./commands/generate.js";
@@ -8,25 +8,20 @@ import { generate } from "./commands/generate.js";
 const program = new Command();
 
 program
-  .name("next-openapi-gen")
+  .name("nextjs-openapi-schema")
   .version("0.0.1")
   .description(
-    "Super fast and easy way to generate OpenAPI documentation for Next.js"
+    "Generate OpenAPI schema for Next.js"
   );
 
 program
   .command("init")
-  .addOption(
-    new Option("-i, --ui <type>", "Specify the UI type, e.g., swagger")
-      .choices(["swagger", "redoc", "stoplight", "rapidoc"])
-      .default("swagger")
-  )
-  .option("-u, --docs-url <url>", "Specify the docs URL", "api-docs")
   .description("Initialize a openapi specification")
   .action(init);
 
 program
   .command("generate")
+  .option("-v, --verbose", "Verbose output", false)
   .description("Generate a specification based on api routes")
   .action(generate);
 

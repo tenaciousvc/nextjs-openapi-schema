@@ -1,13 +1,13 @@
 {
-  "name": "next-openapi-gen",
-  "version": "0.1.2",
-  "description": "Super fast and easy way to generate OpenAPI documentation automatically from API routes in NextJS.",
+  "name": "nextjs-openapi-schema",
+  "version": "0.0.1",
+  "description": "Generate OpenAPI schema automatically from API routes in NextJS.",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "typings": "dist/index.d.ts",
   "bin": {
-    "next-openapi-gen": "./dist/index.js"
+    "nextjs-openapi-schema": "./dist/index.js"
   },
   "files": [
     "dist"
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/tazo90/next-openapi-gen.git"
+    "url": "git+ssh://git@github.com/wearebreak/nextjs-openapi-schema.git"
   },
   "keywords": [
     "react",
@@ -32,7 +32,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "author": "Mariusz Winnik",
+  "author": "Adam Juhos (We Are Break Kft.)",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"

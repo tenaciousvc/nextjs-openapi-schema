@@ -20,10 +20,10 @@
       }
     }
   },
-  "apiDir": "./src/app/api",
-  "schemaDir": "./src",
-  "docsUrl": "api-docs",
-  "ui": "swagger",
-  "outputFile": "swagger.json",
-  "includeOpenApiRoutes": false
+  "x-generator": {
+    "apiDir": "./src/app/api",
+    "schemaDir": "./src",
+    "outputFile": "swagger.json",
+    "onlyOpenApiRoutes": false
+  }
 }
