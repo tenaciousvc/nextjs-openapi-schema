@@ -1,12 +1,12 @@
 import * as t from "@babel/types";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import traverse from "@babel/traverse";
 import { parse } from "@babel/parser";
 
 import { SchemaProcessor } from "./schema-processor.js";
 import { capitalize, extractJSDocComments, getOperationId } from "./utils.js";
-import { DataTypes, OpenApiConfig, RouteDefinition } from "../types.js";
+import type { DataTypes, OpenApiConfig, RouteDefinition } from "../types.js";
 
 const HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 const MUTATION_HTTP_METHODS = ["PATCH", "POST", "PUT"];
@@ -49,6 +49,7 @@ export class RouteProcessor {
         }
 
         if (t.isVariableDeclaration(declaration)) {
+          // biome-ignore lint/complexity/noForEach: <explanation>
           declaration.declarations.forEach((decl) => {
             if (t.isVariableDeclarator(decl) && t.isIdentifier(decl.id)) {
               if (this.isRoute(decl.id.name)) {
@@ -68,6 +69,7 @@ export class RouteProcessor {
   public scanApiRoutes(dir: string, verbose = false) {
     const files = fs.readdirSync(dir);
 
+    // biome-ignore lint/complexity/noForEach: <explanation>
     files.forEach((file) => {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
@@ -87,7 +89,9 @@ export class RouteProcessor {
     dataTypes: DataTypes
   ): void {
     const method = varName.toLowerCase();
+    console.log(" - filePath", filePath);
     let routePath = this.getRoutePath(filePath);
+    console.log(" - Route path", routePath);
     const rootPath = capitalize(routePath.split("/")[1]);
     const operationId = getOperationId(routePath, method);
     const { summary, description, auth, isOpenApi } = dataTypes;
@@ -149,7 +153,10 @@ export class RouteProcessor {
   }
 
   private getRoutePath(filePath: string): string {
-    const suffixPath = filePath.split("api")[1];
+    const { apiDir } = this.config;
+    const apiSeparated = apiDir.split("/");
+    const apiSeparator = apiSeparated[apiSeparated.length - 1];
+    const suffixPath = filePath.split(apiSeparator)[1];
     return suffixPath
       .replace("route.ts", "")
       .replaceAll("\\", "/")
@@ -163,10 +170,12 @@ export class RouteProcessor {
 
       // Extract tags for all methods in path a
       const aTags = Object.values(aMethods).flatMap(
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         (method: any) => method.tags || []
       );
       // Extract tags for all methods in path b
       const bTags = Object.values(bMethods).flatMap(
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         (method: any) => method.tags || []
       );
 
